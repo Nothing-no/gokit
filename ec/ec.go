@@ -1,8 +1,10 @@
 package ec
 
 import (
+	"fmt"
 	"io"
 	"os"
+	"path"
 	"runtime"
 	"strconv"
 	"sync"
@@ -10,7 +12,7 @@ import (
 )
 
 const (
-	logName = "err.log"
+	logName = "msg.log"
 	logDir  = "log"
 	timeFMT = "2006-01-02 15:04:05"
 	debug   = "[debug]"
@@ -78,7 +80,7 @@ func init() {
 // BenchmarkDebug1-6         315565              3922 ns/op
 
 //Debug 用来打印输出debug信息
-func Debug(msg string) {
+func Debug(fmtstr string, v ...interface{}) {
 	pc, file, line, _ := runtime.Caller(1)
 
 	eci.Lock()
@@ -87,15 +89,17 @@ func Debug(msg string) {
 	if eci.status {
 		io.WriteString(eci.file, debug+space+
 			time.Now().Format(timeFMT)+space+
-			file+space+
+			path.Base(file)+space+
 			runtime.FuncForPC(pc).Name()+space+
-			strconv.Itoa(line)+space+msg+lb)
+			strconv.Itoa(line)+space+fmt.Sprintf(fmtstr, v...)+lb)
+		// io.WriteString(eci.file, )
+
 	} else {
-		io.WriteString(os.Stderr, debug+time.Now().Format(timeFMT)+file+runtime.FuncForPC(pc).Name()+strconv.Itoa(line)+msg)
+		io.WriteString(os.Stderr, debug+time.Now().Format(timeFMT)+file+runtime.FuncForPC(pc).Name()+strconv.Itoa(line)+space+fmt.Sprintf(fmtstr, v...))
 	}
 }
 
-//Info 出错信息
+//Info 出错信息t
 func Info(msg string) {
 	_, file, line, _ := runtime.Caller(1)
 
@@ -103,7 +107,7 @@ func Info(msg string) {
 	defer eci.Unlock()
 	if eci.status {
 		io.WriteString(eci.file, _info+time.Now().Format(timeFMT)+space+
-			file+space+
+			path.Base(file)+space+
 			"line"+strconv.Itoa(line)+space+
 			msg+lb)
 	} else {
