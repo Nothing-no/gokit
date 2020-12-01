@@ -125,3 +125,13 @@ func Close() {
 func GetECStatus() bool {
 	return eci.status
 }
+
+//ResetECStatus ...
+func ResetECStatus() {
+	eci.status = false
+}
+
+//SetECStatus ...
+func SetECStatus() {
+	eci.status = true
+}
