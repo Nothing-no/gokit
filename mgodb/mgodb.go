@@ -1,7 +1,7 @@
 package mgodb
 
 import (
-	"logsys/ec"
+	"github.com/nothing-no/gokit/ec"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -13,8 +13,8 @@ var (
 
 //MgoDB 数据库结构体
 type MgoDB struct {
-	Url    string
-	DbName string
+	Url    string `json:"url"`
+	DbName string `json:"db_name"`
 	*mgo.Session
 	*mgo.Database
 }
