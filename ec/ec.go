@@ -95,7 +95,11 @@ func Debug(fmtstr string, v ...interface{}) {
 		// io.WriteString(eci.file, )
 
 	} else {
-		io.WriteString(os.Stderr, debug+time.Now().Format(timeFMT)+file+runtime.FuncForPC(pc).Name()+strconv.Itoa(line)+space+fmt.Sprintf(fmtstr, v...))
+		io.WriteString(os.Stderr, debug+space+
+			time.Now().Format(timeFMT)+space+
+			path.Base(file)+space+
+			runtime.FuncForPC(pc).Name()+space+
+			strconv.Itoa(line)+space+fmt.Sprintf(fmtstr, v...)+lb)
 	}
 }
 
