@@ -79,5 +79,5 @@ func GrayImag(src image.Image) image.Image {
 func ExtName(p string) string {
 	base := path.Base(p)
 	suffix := path.Ext(base)
-	return strings.Trim(base, suffix)
+	return strings.TrimRight(base, suffix)
 }
