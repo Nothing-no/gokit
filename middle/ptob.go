@@ -33,7 +33,7 @@ func Pdf2Bmp(pdfPath string, bmpPath string) error {
 		}
 
 		//创建用来存除图像的
-		tmpFile, err := os.Create(filepath.Join("", fmt.Sprintf(name+"%03d.bmp", i)))
+		tmpFile, err := os.Create(filepath.Join(bmpPath, fmt.Sprintf(name+"%03d.bmp", i)))
 		if nil != err {
 			fmt.Println(err)
 			return err
