@@ -41,6 +41,7 @@ t=(x*z/8)*y*z
 w=x*z/8
 */
 
+//Bmp2Zpl ...
 func Bmp2Zpl(p string, zplPath string) error {
 	bmp, err := ReadBMP(p)
 	if nil != err {

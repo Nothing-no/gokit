@@ -105,6 +105,7 @@ func (my BMP) String() string {
 		my.Info.BitPerPixel, my.Info.ImageSize, len(my.Data))
 }
 
+//ToGray ...
 func (my *BMP) ToGray() error {
 	// var gray image.Gray
 	return nil

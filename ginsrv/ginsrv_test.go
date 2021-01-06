@@ -21,3 +21,8 @@ func TestCheckAddr(t *testing.T) {
 		}
 	}
 }
+
+func TestGetLocalAddr(t *testing.T) {
+	addr := GetLocalBoundIP()
+	t.Error(addr)
+}

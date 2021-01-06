@@ -142,3 +142,19 @@ func TestCountWithCond(t *testing.T) {
 		t.Error("true", l)
 	}
 }
+
+func TestCheck(t *testing.T) {
+	mdb, _ := Init("10.2.3.141:27017", "zhijian")
+	if mdb.CheckValid() {
+		t.Error("valid")
+	} else {
+		t.Error("invalid")
+	}
+
+	if mdb.CheckValid() {
+		t.Error("valid")
+	} else {
+		t.Error("invalid")
+	}
+
+}

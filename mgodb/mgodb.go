@@ -172,3 +172,20 @@ func (my *MgoDB) FakeDel(cName string, data interface{}) bool {
 
 	return true
 }
+
+//Check see if the db is valid
+func (my *MgoDB) CheckValid() bool {
+	cnt := 0
+retry:
+	cnt++
+	if cnt > 3 {
+		return false
+	}
+	err := my.Ping()
+	if nil != err {
+		my, _ = Init(my.Url, my.DbName)
+		goto retry
+	}
+
+	return true
+}

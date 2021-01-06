@@ -15,7 +15,7 @@ import (
 
 //Pdf2Bmp 将pdf转成位图，pdfPath：pdf所在路径，bmpPath：生成的bmp图像所在路径
 //eg: Pdf2Bmp("./test.pdf", "./bmp")
-func Pdf2Bmp(pdfPath string, bmpPath string) error {
+func Pdf2Bmp(pdfPath string, bmpPath string, n ...string) error {
 
 	//打开pdf
 	pdf, err := fitz.New(pdfPath)
@@ -33,7 +33,15 @@ func Pdf2Bmp(pdfPath string, bmpPath string) error {
 		}
 
 		//创建用来存除图像的
-		tmpFile, err := os.Create(filepath.Join(bmpPath, fmt.Sprintf(name+"%03d.bmp", i)))
+		var (
+			tmpFile *os.File
+		)
+		if len(n) == 0 {
+			tmpFile, err = os.Create(filepath.Join(bmpPath, fmt.Sprintf(name+"%03d.bmp", i)))
+		} else {
+			tmpFile, err = os.Create(filepath.Join(bmpPath, fmt.Sprintf(n[0]+"%03d.bmp", i)))
+		}
+
 		if nil != err {
 			fmt.Println(err)
 			return err

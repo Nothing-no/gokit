@@ -2,6 +2,8 @@ package ginsrv
 
 import (
 	"errors"
+	"fmt"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -177,4 +179,17 @@ func ErrRespJson(c *gin.Context, code int, msg string) {
 		ErrNum: code,
 		ErrMsg: msg,
 	})
+}
+
+func GetLocalBoundIP() string {
+	conn, err := net.Dial("udp", "8.8.8.8:53")
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	ip := strings.Split(localAddr.String(), ":")[0]
+	return ip
 }
