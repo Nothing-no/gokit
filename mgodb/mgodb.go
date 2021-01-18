@@ -183,9 +183,18 @@ retry:
 	}
 	err := my.Ping()
 	if nil != err {
-		my, _ = Init(my.Url, my.DbName)
+		tmp, _ := Init(my.Url, my.DbName)
+		my.Session = tmp.Session
+		my.Database = tmp.Database
 		goto retry
 	}
+	// _, err = my.DatabaseNames()
+	// if nil != err {
+	// 	my, _ = Init(my.Url, my.DbName)
+	// 	fmt.Println(err, "1")
+	// 	goto retry
+	// }
+	// fmt.Println(err, "2")
 
 	return true
 }
