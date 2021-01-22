@@ -29,7 +29,7 @@ func Init(url, dbName string) (*MgoDB, error) {
 		//当传入参数均为对应的空值，采用默认的连接到本地的方式
 		s, err = mgo.Dial(MDB_URL)
 		if nil != err {
-			ec.Info(err.Error())
+			ec.Errorf(err.Error())
 			return nil, err
 		}
 		url = MDB_URL
@@ -38,7 +38,7 @@ func Init(url, dbName string) (*MgoDB, error) {
 		//当传入的url为空值时，默认连接本地端口号为27017的mangodb
 		s, err = mgo.Dial(MDB_URL)
 		if nil != err {
-			ec.Info(err.Error())
+			ec.Errorf(err.Error())
 			return nil, err
 		}
 		url = MDB_URL
@@ -46,14 +46,14 @@ func Init(url, dbName string) (*MgoDB, error) {
 		//传入dbName为对应空值，连接url所在会话，默认打开test数据库
 		s, err = mgo.Dial(url)
 		if nil != err {
-			ec.Info(err.Error())
+			ec.Errorf(err.Error())
 			return nil, err
 		}
 		dbName = "test"
 	} else {
 		s, err = mgo.Dial(url)
 		if nil != err {
-			ec.Info(err.Error())
+			ec.Errorf(err.Error())
 			return nil, err
 		}
 	}
@@ -72,7 +72,7 @@ func Init(url, dbName string) (*MgoDB, error) {
 func (my *MgoDB) Insert(cName string, data ...interface{}) error {
 	err := my.C(cName).Insert(data...)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return err
 	}
 
@@ -88,7 +88,7 @@ func (my *MgoDB) SearchOne(cName, id string) (interface{}, error) {
 
 	err = my.C(cName).FindId(id).One(&result)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return nil, err
 	}
 
@@ -104,7 +104,7 @@ func (my *MgoDB) SearchAll(cName string, q interface{}) ([]interface{}, error) {
 
 	err = my.C(cName).Find(q).All(&result)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return nil, err
 	}
 
@@ -119,7 +119,7 @@ func (my *MgoDB) GetPage(cName string, page int, size int) ([]interface{}, error
 	)
 	err = my.C(cName).Find(nil).Skip(page * size).Limit(size).All(&result)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return nil, err
 	}
 
@@ -135,7 +135,7 @@ func (my *MgoDB) Search(cName string, q interface{}, page int, size int) ([]inte
 
 	err = my.C(cName).Find(q).Skip(page * size).Limit(size).All(&result)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return nil, err
 	}
 	return result, nil
@@ -145,7 +145,7 @@ func (my *MgoDB) Search(cName string, q interface{}, page int, size int) ([]inte
 func (my *MgoDB) Update(cName string, where, modify interface{}) error {
 	err := my.C(cName).Update(where, modify)
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return err
 	}
 
@@ -166,7 +166,7 @@ func (my *MgoDB) CountWithCond(cName string, cond interface{}) (int, error) {
 func (my *MgoDB) FakeDel(cName string, data interface{}) bool {
 	err := my.C(cName).Update(data, bson.M{"$set": bson.M{"status": 1}})
 	if nil != err {
-		ec.Info(err.Error())
+		ec.Errorf(err.Error())
 		return false
 	}
 

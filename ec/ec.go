@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 //LEVEL
@@ -174,6 +176,15 @@ func Warnf(fmtStr string, v ...interface{}) {
 				line,
 				content))
 	}
+}
+
+//PostLogInfo ...
+func PostLogInfo(c *gin.Context) {
+
+}
+
+func GetLogInfo(c *gin.Context) {
+	
 }
 
 //Info 出错信息t

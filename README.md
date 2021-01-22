@@ -6,7 +6,7 @@
 >   ec.Close()    
 > }
 > ec.Debug("debug messge")
-> ec.Info("info message")
+> ec.Errorf("info message")
 >```
 ### xls 操作excel,
 >```go
