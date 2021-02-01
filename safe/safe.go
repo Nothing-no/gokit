@@ -1,6 +1,8 @@
 package safe
 
 import (
+	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -13,128 +15,117 @@ const (
 	ARRAY
 )
 
-//new type
 type (
-	Int struct {
-		v int64
-		l *sync.RWMutex
+	//Global 全局变量，考虑到全局变量可能存在竞态，所以加锁保护
+	Global struct {
+		v  interface{}
+		rw *sync.RWMutex
 	}
-
-	Float struct {
-		v float64
-		l *sync.RWMutex
-	}
-
-	String struct {
-		v string
-		l *sync.RWMutex
-	}
-
-	Bool struct {
-		v bool
-		l *sync.RWMutex
-	}
-
-	Void struct {
-		v interface{}
-		l *sync.RWMutex
-	}
-
-	Array struct {
-		v []interface{}
-		l *sync.RWMutex
-	}
-
-	GlobalManager struct{}
+	//Map map[string]interface{}
+	Map map[string]interface{}
 )
 
-type Getter interface {
-	Get() Void
-}
+var rwMuetx sync.RWMutex
 
-type Setter interface {
-	Set(Void)
-}
-
-func NewInt() *Int {
-	return &Int{
-		l: &sync.RWMutex{},
+//NewGlobal 初始化一个新全局变量
+func NewGlobal(v ...interface{}) *Global {
+	if len(v) == 0 {
+		v = append(v, nil)
+	}
+	return &Global{
+		v:  v[0],
+		rw: &sync.RWMutex{},
 	}
 }
 
-func NewFloat() *Float {
-	return &Float{
-		l: &sync.RWMutex{},
-	}
+func (my Global) String() string {
+	return fmt.Sprintf("%v", my.v)
 }
 
-func NewBool() *Bool {
-	return &Bool{
-		l: &sync.RWMutex{},
-	}
-}
-
-func NewString() *String {
-	return &String{
-		l: &sync.RWMutex{},
-	}
-}
-
-func NewArray() *Array {
-	return &Array{
-		l: &sync.RWMutex{},
-	}
-}
-
-func (my *Int) Get() int64 {
-	my.l.RLock()
-	defer my.l.RUnlock()
+//Get get global value
+func (my *Global) Get() interface{} {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
 	return my.v
 }
 
-func (my *Bool) Get() bool {
-	my.l.RLock()
-	defer my.l.RUnlock()
-	return my.v
-}
-
-func (my *String) Get() string {
-	my.l.RLock()
-	defer my.l.RUnlock()
-	return my.v
-}
-
-func (my *Float) Get() float64 {
-	my.l.RLock()
-	defer my.l.RUnlock()
-	return my.v
-}
-
-func (my *Array) Get() []interface{} {
-	my.l.RLock()
-	defer my.l.RUnlock()
-	return my.v
-}
-
-func (my *Int) Set(v int64) {
-	my.l.Lock()
-	defer my.l.Unlock()
+//Set set global value
+func (my *Global) Set(v interface{}) {
+	my.rw.Lock()
+	defer my.rw.Unlock()
 	my.v = v
 }
 
-func (my *Float) Set(v float64) {
-	my.l.Lock()
-	defer my.l.Unlock()
-	my.v = v
+//GetInt get int value
+func (my *Global) GetInt() (int, error) {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
+	if v, ok := my.v.(int); ok {
+		return v, nil
+	}
+
+	return 0, errors.New("get int not ok")
 }
 
-func (my *Bool) Set(v bool) {
-	my.l.Lock()
-	defer my.l.Unlock()
-	my.v = v
+//GetInt64 get int64 value
+func (my *Global) GetInt64() (int64, error) {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
+	if v, ok := my.v.(int64); ok {
+		return v, nil
+	}
+
+	return 0, errors.New("get int64 not ok")
 }
 
-func (my *String) Set(v string) {
-	my.l.Lock()
+//GetFloat get float64 value
+func (my *Global) GetFloat() (float64, error) {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
+	if v, ok := my.v.(float64); ok {
+		return v, nil
+	}
 
+	return 0, errors.New("get float64 not ok")
+}
+
+//GetBool get bool value
+func (my *Global) GetBool() bool {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
+	if v, ok := my.v.(bool); ok {
+		return v
+	}
+
+	return false
+}
+
+//GetMap get map value
+func (my *Global) GetMap() *Map {
+	my.rw.RLock()
+	defer my.rw.RUnlock()
+	if v, ok := my.v.(map[string]interface{}); ok {
+		r := make(Map)
+		r = v
+		return &r
+	}
+
+	return nil
+}
+
+//Get get map value(map)
+func (my *Map) Get(key string) interface{} {
+	rwMuetx.RLock()
+	defer rwMuetx.RUnlock()
+	if my == nil {
+		return nil
+	}
+	return (*my)[key]
+}
+
+//Set get map value (map[string]interface{})
+func (my *Map) Set(key string, v interface{}) {
+	rwMuetx.Lock()
+	defer rwMuetx.Unlock()
+	(*my)[key] = v
 }
