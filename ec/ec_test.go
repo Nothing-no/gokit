@@ -10,7 +10,7 @@ func BenchmarkDebug(b *testing.B) {
 }
 
 func TestErrorf(t *testing.T) {
-	Errorf("hello test error")
+	Errorf("3hello test error")
 }
 
 // func BenchmarkDebug1(b *testing.B) {

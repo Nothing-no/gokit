@@ -1,3 +1,7 @@
 **/main.go
 **/go.mod
 **/go.sum
+/discover/
+/multicast/
+/test.json
+/*.exe

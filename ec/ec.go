@@ -53,7 +53,12 @@ func init() {
 		}
 	}
 
-	f, err := os.OpenFile(dir+dirSep+logDir+dirSep+logName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	fullp := dir + dirSep + logDir + dirSep + logName
+	if _, err := os.Stat(fullp); nil == err {
+		os.Rename(fullp, fullp+".old")
+	}
+
+	f, err := os.OpenFile(fullp, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if nil != err {
 		fmt.Println(err)
 	}
@@ -184,7 +189,7 @@ func PostLogInfo(c *gin.Context) {
 }
 
 func GetLogInfo(c *gin.Context) {
-	
+
 }
 
 //Info 出错信息t
