@@ -27,3 +27,10 @@ func TestGetFiles(t *testing.T) {
 	t.Error(r, rs)
 
 }
+
+func TestDelete(t *testing.T) {
+	err := Delete("./test.zip")
+	if nil != err {
+		t.Error(err)
+	}
+}

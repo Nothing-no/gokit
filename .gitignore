@@ -5,3 +5,8 @@
 /multicast/
 /test.json
 /*.exe
+/dblog/
+/counter/
+/af/
+**/*.txt
+/log/

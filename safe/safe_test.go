@@ -45,4 +45,10 @@ func TestEncode(t *testing.T) {
 
 	d, _ := Encode32(&src, 0)
 	t.Error(d)
+
+	err := Mem()
+	if nil != err {
+		t.Error(err)
+	}
+	t.Error("1")
 }

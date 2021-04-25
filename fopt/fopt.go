@@ -2,6 +2,7 @@ package fopt
 
 import (
 	"archive/zip"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -176,6 +177,22 @@ func (my *UnzipPrepare) Unzip() error {
 			return err
 		}
 
+	}
+
+	return nil
+}
+
+//Delete delete files,p must have at least one value
+func Delete(p ...string) error {
+	if len(p) == 0 {
+		return errors.New("lack of param: at least one")
+	}
+
+	for _, pone := range p {
+		err := os.Remove(pone)
+		if nil != err {
+			return err
+		}
 	}
 
 	return nil

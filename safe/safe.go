@@ -3,9 +3,12 @@ package safe
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 	"unsafe"
+
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 const (
@@ -312,4 +315,36 @@ func byteToi32(v []byte) (dest uint32) {
 	}
 
 	return
+}
+
+func Mem() error {
+	//	v, err := mem.VirtualMemory()
+	//if nil != err {
+	//fmt.Println(err)
+	//return err
+	//	}
+	ps, err := process.Processes()
+	if nil != err {
+		fmt.Println(err)
+	}
+	for _, p := range ps {
+		n, _ := p.Name()
+		s, _ := p.Status()
+		c, _ := p.CPUPercent()
+		un, _ := p.Username()
+
+		fmt.Println(p, n, s, c, un, p.Pid)
+		if strings.Contains(n, "test") {
+			fmt.Println(21, p.Pid)
+			err := p.Kill()
+			fmt.Println(err)
+		}
+	}
+
+	// almost every return value is a struct
+	//fmt.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
+
+	// convert to JSON. String() is also implemented
+	//fmt.Println(v)
+	return nil
 }
